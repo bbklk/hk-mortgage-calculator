@@ -203,6 +203,8 @@
     try {
       const saved = JSON.parse(localStorage.getItem(storageKey));
       if (!saved) return;
+      if (saved.managementRate === 4.2) saved.managementRate = 3.5;
+      if (saved.renovationRate === 1_500) saved.renovationRate = 1_000;
       Object.entries(saved).forEach(([key, value]) => {
         const input = form.elements.namedItem(key);
         if (!input) return;

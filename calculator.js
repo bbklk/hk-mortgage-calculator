@@ -185,7 +185,7 @@
     const governmentRentAnnual = input.hasGovernmentRent
       ? rateableValue * POLICY.governmentRentRate
       : 0;
-    const managementMonthly = area * Math.max(0, safeNumber(input.managementRate, 4.2));
+    const managementMonthly = area * Math.max(0, safeNumber(input.managementRate, 3.5));
     const maintenanceMonthly = Math.max(0, safeNumber(input.maintenanceMonthly));
     const monthlyNonMortgage = ratesAnnual / 12 + governmentRentAnnual / 12 + managementMonthly + maintenanceMonthly;
     const monthlyHolding = loan.totalPayment + monthlyNonMortgage;
@@ -195,7 +195,7 @@
     const duty = stampDuty(stampBase);
     const agencyFee = price * Math.max(0, safeNumber(input.agencyRate, 1)) / 100;
     const legalFee = Math.max(0, safeNumber(input.legalFee, 12_000));
-    const renovation = area * Math.max(0, safeNumber(input.renovationRate, 1_500));
+    const renovation = area * Math.max(0, safeNumber(input.renovationRate, 1_000));
     const mortgageInsurance = requestedLoan * Math.max(0, safeNumber(input.mortgageInsuranceRate)) / 100;
     const miscFee = Math.max(0, safeNumber(input.miscFee, 10_000));
     const upfront = downPayment + duty + agencyFee + legalFee + renovation + mortgageInsurance + miscFee;
