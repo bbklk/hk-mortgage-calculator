@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="zh-HK">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#f4f5f1">
+  <title>置业算盘｜香港房贷及持有成本</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-block">
+      <div class="brand-mark" aria-hidden="true">置</div>
+      <div>
+        <strong>置业算盘</strong>
+        <span>香港员工按揭</span>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="button button-ghost" id="resetButton" type="button">重设</button>
+      <button class="button button-ghost" id="exportButton" type="button">导出明细</button>
+      <button class="button button-primary" id="printButton" type="button">打印 / PDF</button>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <aside class="input-panel" aria-label="计算参数">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">CALCULATOR</p>
+          <h1>香港房贷及持有成本</h1>
+        </div>
+        <span class="live-dot">实时</span>
+      </div>
+
+      <form id="calculatorForm">
+        <fieldset>
+          <legend><span>01</span> 物业与收入</legend>
+          <label class="field">
+            <span class="label-line"><span>成交价</span><output data-readout="price">HK$4,000,000</output></span>
+            <span class="input-wrap currency"><input id="price" name="price" type="number" min="0" step="10000" value="4000000" inputmode="numeric"></span>
+          </label>
+          <label class="field">
+            <span class="label-line"><span>银行估价</span><output data-readout="valuation">HK$4,000,000</output></span>
+            <span class="input-wrap currency"><input id="valuation" name="valuation" type="number" min="0" step="10000" value="4000000" inputmode="numeric"></span>
+          </label>
+          <div class="field-grid">
+            <label class="field">
+              <span class="label-line"><span>月薪</span><output data-readout="salary">HK$32,000</output></span>
+              <span class="input-wrap currency"><input id="salary" name="salary" type="number" min="0" step="1000" value="32000" inputmode="numeric"></span>
+            </label>
+            <label class="field">
+              <span class="label-line"><span>实用面积</span><output data-readout="area">393 尺</output></span>
+              <span class="input-wrap suffix" data-suffix="尺"><input id="area" name="area" type="number" min="0" step="1" value="393" inputmode="numeric"></span>
+            </label>
+          </div>
+          <div class="field-grid">
+            <label class="field">
+              <span class="label-line"><span>按揭成数</span><output data-readout="ltvPercent">90%</output></span>
+              <span class="input-wrap suffix" data-suffix="%"><input id="ltvPercent" name="ltvPercent" type="number" min="10" max="90" step="1" value="90" inputmode="numeric"></span>
+            </label>
+            <label class="field">
+              <span class="label-line"><span>还款年期</span></span>
+              <span class="select-wrap"><select id="years" name="years"><option value="15">15 年</option><option value="20">20 年</option><option value="25">25 年</option><option value="30" selected>30 年</option><option value="35">35 年</option><option value="40">40 年</option></select></span>
+            </label>
+          </div>
+          <label class="field">
+            <span class="label-line"><span>其他每月债务</span><output data-readout="otherDebt">HK$0</output></span>
+            <span class="input-wrap currency"><input id="otherDebt" name="otherDebt" type="number" min="0" step="100" value="0" inputmode="numeric"></span>
+          </label>
+          <div class="toggle-row strategy-toggle">
+            <div><strong>自动遵守贷款上限</strong><span>第二层超过DSR、物业或计划上限时自动调整</span></div>
+            <label class="switch"><input id="autoDsr" name="autoDsr" type="checkbox" checked><span aria-hidden="true"></span><em>自动遵守贷款上限</em></label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend><span>02</span> 两档利率</legend>
+          <label class="field">
+            <span class="label-line"><span>最优惠利率 P</span><output data-readout="primeRate">5.25%</output></span>
+            <span class="input-wrap suffix" data-suffix="%"><input id="primeRate" name="primeRate" type="number" min="0" max="20" step="0.05" value="5.25" inputmode="decimal"></span>
+          </label>
+          <div class="field tier2-target-field">
+            <span class="label-line"><label for="desiredTier2">第二层目标贷款</label><button id="fillTier2MaxButton" class="inline-command" type="button">填入可贷上限</button></span>
+            <span class="input-wrap currency"><input id="desiredTier2" name="desiredTier2" type="number" min="0" step="10000" value="1000000" inputmode="numeric"></span>
+            <small id="tier2LimitHint" class="field-hint">当前综合上限 HK$0</small>
+          </div>
+          <div class="formula-grid" aria-label="利率规则">
+            <div><span>第一层</span><strong>P − 4.75%</strong><small>首1000万最低0.8%</small></div>
+            <div><span>第二层</span><strong>P − 2.5%</strong><small>金额不超过第一层</small></div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend><span>03</span> 每月持有</legend>
+          <div class="field-grid">
+            <label class="field">
+              <span class="label-line"><span>租值占楼价</span><output data-readout="rateableValuePercent">3%</output></span>
+              <span class="input-wrap suffix" data-suffix="%"><input id="rateableValuePercent" name="rateableValuePercent" type="number" min="0" max="20" step="0.1" value="3" inputmode="decimal"></span>
+            </label>
+            <label class="field">
+              <span class="label-line"><span>管理费 / 尺</span><output data-readout="managementRate">HK$4.2</output></span>
+              <span class="input-wrap currency"><input id="managementRate" name="managementRate" type="number" min="0" step="0.1" value="4.2" inputmode="decimal"></span>
+            </label>
+          </div>
+          <div class="toggle-row">
+            <div><strong>计算地租</strong><span>按估算应课差饷租值的3%</span></div>
+            <label class="switch"><input id="hasGovernmentRent" name="hasGovernmentRent" type="checkbox" checked><span aria-hidden="true"></span><em>计算地租</em></label>
+          </div>
+          <label class="field">
+            <span class="label-line"><span>每月维修储备</span><output data-readout="maintenanceMonthly">HK$0</output></span>
+            <span class="input-wrap currency"><input id="maintenanceMonthly" name="maintenanceMonthly" type="number" min="0" step="100" value="0" inputmode="numeric"></span>
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend><span>04</span> 一次性支出</legend>
+          <div class="field-grid">
+            <label class="field">
+              <span class="label-line"><span>中介佣金</span><output data-readout="agencyRate">1%</output></span>
+              <span class="input-wrap suffix" data-suffix="%"><input id="agencyRate" name="agencyRate" type="number" min="0" max="10" step="0.1" value="1" inputmode="decimal"></span>
+            </label>
+            <label class="field">
+              <span class="label-line"><span>律师费</span><output data-readout="legalFee">HK$12,000</output></span>
+              <span class="input-wrap currency"><input id="legalFee" name="legalFee" type="number" min="0" step="500" value="12000" inputmode="numeric"></span>
+            </label>
+          </div>
+          <div class="field-grid">
+            <label class="field">
+              <span class="label-line"><span>装修 / 尺</span><output data-readout="renovationRate">HK$1,500</output></span>
+              <span class="input-wrap currency"><input id="renovationRate" name="renovationRate" type="number" min="0" step="50" value="1500" inputmode="numeric"></span>
+            </label>
+            <label class="field">
+              <span class="label-line"><span>按揭保险</span><output data-readout="mortgageInsuranceRate">0%</output></span>
+              <span class="input-wrap suffix" data-suffix="%"><input id="mortgageInsuranceRate" name="mortgageInsuranceRate" type="number" min="0" max="20" step="0.1" value="0" inputmode="decimal"></span>
+            </label>
+          </div>
+          <label class="field">
+            <span class="label-line"><span>杂费 / 搬屋 / 家电</span><output data-readout="miscFee">HK$10,000</output></span>
+            <span class="input-wrap currency"><input id="miscFee" name="miscFee" type="number" min="0" step="1000" value="10000" inputmode="numeric"></span>
+          </label>
+        </fieldset>
+      </form>
+    </aside>
+
+    <section class="results" aria-live="polite">
+      <div class="results-intro">
+        <div>
+          <p class="eyebrow">YOUR POSITION</p>
+          <h2>以月薪 <span id="salaryHeadline">HK$32,000</span> 计算</h2>
+        </div>
+        <div class="as-of">政策参数<br><strong>2026.02.26</strong></div>
+      </div>
+
+      <section class="kpi-grid" aria-label="主要结果">
+        <article class="kpi kpi-dark"><span>买房初期现金</span><strong id="upfrontKpi">HK$0</strong><small>首期及一次性支出</small></article>
+        <article class="kpi"><span>每月持有成本</span><strong id="monthlyHoldingKpi">HK$0</strong><small id="housingRatioKpi">占月薪 0%</small></article>
+        <article class="kpi"><span>每月房贷</span><strong id="mortgageKpi">HK$0</strong><small id="mortgageRateKpi">两层合计</small></article>
+        <article class="kpi"><span>供款与入息比</span><strong id="dsrKpi">0%</strong><small>上限 50%</small></article>
+      </section>
+
+      <div id="eligibilityBanner" class="status-banner" role="status">
+        <span class="status-icon" aria-hidden="true">✓</span>
+        <div><strong id="eligibilityTitle">通过当前参数检查</strong><p id="eligibilityText"></p></div>
+      </div>
+
+      <div class="results-grid">
+        <article class="result-card loan-card">
+          <div class="card-heading"><div><p class="eyebrow">LOAN SPLIT</p><h3>按揭结构</h3></div><strong id="requestedLoanValue">HK$0</strong></div>
+          <div class="loan-bar" aria-hidden="true"><span id="tier1Bar"></span><span id="tier2Bar"></span></div>
+          <div class="legend-row"><span><i class="dot tier1"></i>第一层</span><span><i class="dot tier2"></i>第二层</span></div>
+          <dl class="detail-list">
+            <div><dt>第一层贷款</dt><dd><strong id="tier1Amount">HK$0</strong><span id="tier1Meta">0% · HK$0/月</span></dd></div>
+            <div><dt>第二层贷款</dt><dd><strong id="tier2Amount">HK$0</strong><span id="tier2Meta">0% · HK$0/月</span></dd></div>
+            <div><dt>现金首期</dt><dd><strong id="downPaymentValue">HK$0</strong><span id="loanBaseMeta">按较低者计算</span></dd></div>
+            <div><dt>全期利息估算</dt><dd><strong id="totalInterestValue">HK$0</strong><span id="termMeta">30年等额本息</span></dd></div>
+          </dl>
+        </article>
+
+        <article class="result-card affordability-card">
+          <div class="card-heading"><div><p class="eyebrow">AFFORDABILITY</p><h3>负担能力</h3></div><span id="affordabilityTag" class="tag">合格</span></div>
+          <div class="affordability-main">
+            <div id="dsrRing" class="dsr-ring"><div><strong id="dsrRingValue">0%</strong><span>DSR</span></div></div>
+            <dl class="mini-list">
+              <div><dt>每月债务上限</dt><dd id="debtLimitValue">HK$0</dd></div>
+              <div><dt>DSR可承受贷款</dt><dd id="maxDsrLoanValue">HK$0</dd></div>
+              <div><dt>第二层综合可贷上限</dt><dd id="maxTier2Value">HK$0</dd></div>
+              <div><dt>对应楼价</dt><dd id="maxPropertyValue">HK$0</dd></div>
+              <div><dt>扣除住屋及债务后</dt><dd id="disposableValue">HK$0</dd></div>
+            </dl>
+          </div>
+          <div class="stress-row"><div><span>现时 P</span><strong id="currentScenario">HK$0/月</strong></div><div><span>P + 2%</span><strong id="stressScenario">HK$0/月</strong></div><div><span>加息后 DSR</span><strong id="stressDsrValue">0%</strong></div></div>
+          <div class="income-needed"><span>第一层、第二层各贷满时所需月收入</span><strong id="fullTierIncomeValue">HK$0</strong></div>
+        </article>
+
+        <article class="result-card monthly-card">
+          <div class="card-heading"><div><p class="eyebrow">MONTHLY</p><h3>每月持有成本</h3></div><strong id="monthlyTotalValue">HK$0</strong></div>
+          <div id="monthlyChart" class="cost-chart" aria-label="每月成本分布"></div>
+          <dl id="monthlyBreakdown" class="breakdown-list"></dl>
+          <div class="card-footnote">差饷和地租以楼价推算的应课差饷租值作预算；管理费以实用面积估算。</div>
+        </article>
+
+        <article class="result-card upfront-card">
+          <div class="card-heading"><div><p class="eyebrow">UPFRONT</p><h3>买房初期成本</h3></div><strong id="upfrontTotalValue">HK$0</strong></div>
+          <dl id="upfrontBreakdown" class="breakdown-list"></dl>
+          <div class="cash-timeline">
+            <div><span>现金首期</span><strong id="timelineDownPayment">HK$0</strong></div>
+            <div><span>税费及交易支出</span><strong id="timelineTransaction">HK$0</strong></div>
+            <div><span>装修及其他</span><strong id="timelineFitout">HK$0</strong></div>
+          </div>
+        </article>
+      </div>
+
+      <section class="assumptions-band">
+        <div><p class="eyebrow">RULES USED</p><h3>截图中的员工按揭规则</h3></div>
+        <div class="rule-grid">
+          <div><span>最高按揭</span><strong>成交价 / 估价较低者 × 90%</strong></div>
+          <div><span>第一层上限</span><strong>120个月基本薪金</strong></div>
+          <div><span>第二层上限</span><strong>不超过第一层贷款</strong></div>
+          <div><span>DSR</span><strong>总每月债务不超过收入50%</strong></div>
+        </div>
+      </section>
+
+      <footer>
+        <p>此工具是预算模型，不是银行批核、估价或税务意见。实际差饷、地租、管理费、律师费、佣金及按揭保险以正式文件为准。</p>
+        <a href="https://www.ird.gov.hk/eng/faq/avd.htm" target="_blank" rel="noreferrer">香港税务局：现行从价印花税表</a>
+      </footer>
+    </section>
+  </main>
+
+  <script src="calculator.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
