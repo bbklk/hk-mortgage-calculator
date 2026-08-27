@@ -38,7 +38,7 @@ const defaultResult = calculator.derive({
   rateableValuePercent: 3,
   managementRate: 3.5,
   hasGovernmentRent: true,
-  maintenanceMonthly: 0,
+  maintenanceMonthly: 1_500,
   agencyRate: 1,
   legalFee: 12_000,
   renovationRate: 1_000,
@@ -55,6 +55,7 @@ assert.equal(defaultResult.loan.tier1First, 0.8);
 assert.equal(defaultResult.loan.tier2Rate, 2.75);
 closeTo(defaultResult.duty, 100);
 closeTo(defaultResult.managementMonthly, 1_375.5);
+closeTo(defaultResult.maintenanceMonthly, 1_500);
 closeTo(defaultResult.renovation, 393_000);
 closeTo(defaultResult.upfront, 855_100);
 assert.equal(defaultResult.eligible, true);

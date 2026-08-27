@@ -205,6 +205,7 @@
       if (!saved) return;
       if (saved.managementRate === 4.2) saved.managementRate = 3.5;
       if (saved.renovationRate === 1_500) saved.renovationRate = 1_000;
+      if (saved.maintenanceMonthly === 0) saved.maintenanceMonthly = 1_500;
       Object.entries(saved).forEach(([key, value]) => {
         const input = form.elements.namedItem(key);
         if (!input) return;

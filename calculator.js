@@ -186,7 +186,7 @@
       ? rateableValue * POLICY.governmentRentRate
       : 0;
     const managementMonthly = area * Math.max(0, safeNumber(input.managementRate, 3.5));
-    const maintenanceMonthly = Math.max(0, safeNumber(input.maintenanceMonthly));
+    const maintenanceMonthly = Math.max(0, safeNumber(input.maintenanceMonthly, 1_500));
     const monthlyNonMortgage = ratesAnnual / 12 + governmentRentAnnual / 12 + managementMonthly + maintenanceMonthly;
     const monthlyHolding = loan.totalPayment + monthlyNonMortgage;
     const housingRatio = salary ? monthlyHolding / salary : Infinity;
